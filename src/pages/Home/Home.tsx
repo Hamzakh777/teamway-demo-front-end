@@ -1,4 +1,4 @@
-import { Button, Card } from "antd";
+import { Button, Card, Progress, Space } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -51,13 +51,20 @@ export const Home: React.FC = () => {
   // steps
   const [currentStep, setCurrentStep] = useState(0);
   const currentQuestion: Question | undefined = questions[currentStep];
+  const isResultsView = currentStep === questions.length;
 
   const stepsNode = (
     <>
-      <Button style={{ marginRight: "1rem" }} disabled={currentStep === 0}>
+      <Button
+        style={{ marginRight: "1rem" }}
+        disabled={currentStep === 0}
+        onClick={() => setCurrentStep(currentStep - 1)}
+      >
         Previous
       </Button>
-      <Button type="primary">Next</Button>
+      <Button type="primary" onClick={() => setCurrentStep(currentStep + 1)}>
+        {currentStep === questions.length - 1 ? "Finish" : "Next"}
+      </Button>
     </>
   );
 
@@ -75,6 +82,37 @@ export const Home: React.FC = () => {
     setResults(res);
   }, [questions]);
 
+  const questionaireNode = () => (
+    <>
+      <Steps questions={questions} currentStep={currentStep} />
+      <CurrentQuestion
+        question={currentQuestion}
+        value={results[currentQuestion.id] ?? null}
+        onChange={(value) => handleResultChange(currentQuestion.id, value)}
+      />
+      <StyledActionsWrapper>{stepsNode}</StyledActionsWrapper>
+    </>
+  );
+
+  const resultsNode = () => {
+    let totalPoints = 0;
+    questions.forEach((question) => (totalPoints += question.answers.length - 1));
+
+    let userAnswersPoints = 0;
+    for (const res in results) {
+      const selectedValue = results[res];
+      userAnswersPoints += selectedValue;
+    }
+
+    const percentage = userAnswersPoints !== 0 ? (totalPoints / userAnswersPoints) * 10 : 0;
+    return (
+      <>
+        <h3>{`You are ${percentage}% extrovert`}</h3>
+        <Progress percent={percentage} />
+      </>
+    );
+  };
+
   return (
     <StyledPage>
       <Card
@@ -82,19 +120,8 @@ export const Home: React.FC = () => {
         bodyStyle={{ width: "35rem" }}
         loading={isLoading}
       >
-        {!isLoading && !!currentQuestion && (
-          <div>
-            <Steps questions={questions} currentStep={currentStep} />
-            <CurrentQuestion
-              question={currentQuestion}
-              value={results[currentQuestion.id] ?? null}
-              onChange={(value) =>
-                handleResultChange(currentQuestion.id, value)
-              }
-            />
-            <StyledActionsWrapper>{stepsNode}</StyledActionsWrapper>
-          </div>
-        )}
+        {!isLoading && !!currentQuestion && questionaireNode()}
+        {!isLoading && isResultsView && resultsNode()}
       </Card>
     </StyledPage>
   );

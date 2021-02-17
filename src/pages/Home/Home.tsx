@@ -49,13 +49,22 @@ export const Home: React.FC = () => {
   }, []);
 
   // steps
-  const [currentStep, setCurentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
   const currentQuestion: Question | undefined = questions[currentStep];
+
+  const stepsNode = (
+    <>
+      <Button style={{ marginRight: "1rem" }} disabled={currentStep === 0}>
+        Previous
+      </Button>
+      <Button type="primary">Next</Button>
+    </>
+  );
 
   // results
   const [results, setResults] = useState<{ [key: number]: number }>({});
   const handleResultChange = (questionId: number, value: number) => {
-    setResults((oldResults) => ({ ...oldResults, [questionId]: value }))
+    setResults((oldResults) => ({ ...oldResults, [questionId]: value }));
   };
 
   useEffect(() => {
@@ -79,12 +88,11 @@ export const Home: React.FC = () => {
             <CurrentQuestion
               question={currentQuestion}
               value={results[currentQuestion.id] ?? null}
-              onChange={(value) => handleResultChange(currentQuestion.id, value)}
+              onChange={(value) =>
+                handleResultChange(currentQuestion.id, value)
+              }
             />
-            <StyledActionsWrapper>
-              <Button style={{ marginRight: "1rem" }}>Previous</Button>
-              <Button type="primary">Next</Button>
-            </StyledActionsWrapper>
+            <StyledActionsWrapper>{stepsNode}</StyledActionsWrapper>
           </div>
         )}
       </Card>

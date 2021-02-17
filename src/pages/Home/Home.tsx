@@ -1,4 +1,4 @@
-import { Button, Card, Progress, Space } from "antd";
+import { Button, Card, Progress } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -104,7 +104,7 @@ export const Home: React.FC = () => {
       userAnswersPoints += selectedValue;
     }
 
-    const percentage = userAnswersPoints !== 0 ? (totalPoints / userAnswersPoints) * 10 : 0;
+    const percentage = userAnswersPoints !== 0 ? Math.ceil((totalPoints / userAnswersPoints) * 10 ): 0;
     return (
       <>
         <h3>{`You are ${percentage}% extrovert`}</h3>

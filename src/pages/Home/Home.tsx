@@ -104,7 +104,7 @@ export const Home: React.FC = () => {
       userAnswersPoints += selectedValue;
     }
 
-    const percentage = userAnswersPoints !== 0 ? Math.ceil((totalPoints / userAnswersPoints) * 10 ): 0;
+    const percentage = userAnswersPoints !== 0 ? Math.ceil((userAnswersPoints * 100 / totalPoints)) : 0;
     return (
       <>
         <h3>{`You are ${percentage}% extrovert`}</h3>

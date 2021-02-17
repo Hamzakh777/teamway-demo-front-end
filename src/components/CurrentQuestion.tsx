@@ -4,12 +4,12 @@ import { Question } from "../types";
 import { Radio, RadioChangeEvent } from "antd";
 
 export interface CurrentQuestionProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
   question: Question;
 
-  value: number
+  value?: number;
 
-  onChange?: (e: RadioChangeEvent) => void
+  onChange?: (value: number) => void;
 }
 
 const StyledWrapper = styled.div`
@@ -28,13 +28,23 @@ const CurrentQuestion: React.FC<CurrentQuestionProps> = ({
   onChange,
   ...props
 }) => {
+  const handleChange = (e: RadioChangeEvent) => {
+    if (onChange) {
+      onChange(e.target.value);
+    }
+  };
+
   return (
     <StyledWrapper {...props}>
       <h3>{question.title}</h3>
-      <Radio.Group onChange={onChange} value={value}>
+      <Radio.Group onChange={handleChange} value={value}>
         {question.answers.map((answer) => {
           return (
-            <Radio style={radioStyle} value={answer.value} key={answer.id}>
+            <Radio
+              style={radioStyle}
+              value={answer.extrovertValue}
+              key={answer.id}
+            >
               {answer.title}
             </Radio>
           );

@@ -7,6 +7,6 @@ export interface Question {
 export interface Answer {
     id: number,
     title: string,
-    value: number,
+    extrovertValue: number,
     questionId: number
 }

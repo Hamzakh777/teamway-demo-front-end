@@ -23,8 +23,6 @@ const StyledActionsWrapper = styled.div`
 export const Home: React.FC = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentStep, setCurentStep] = useState(0);
-  const [results, setResults] = useState({});
 
   const fetchQuestions = async () => {
     setIsLoading(true);
@@ -50,8 +48,22 @@ export const Home: React.FC = () => {
     fetchQuestions();
   }, []);
 
-  useEffect(() => {
+  // steps
+  const [currentStep, setCurentStep] = useState(0);
+  const currentQuestion: Question | undefined = questions[currentStep];
 
+  // results
+  const [results, setResults] = useState<{ [key: number]: number }>({});
+  const handleResultChange = (questionId: number, value: number) => {
+    setResults((oldResults) => ({ ...oldResults, [questionId]: value }))
+  };
+
+  useEffect(() => {
+    let res: { [key: number]: number } = {};
+    for (const question of questions) {
+      res[question.id] = 0;
+    }
+    setResults(res);
   }, [questions]);
 
   return (
@@ -61,12 +73,20 @@ export const Home: React.FC = () => {
         bodyStyle={{ width: "35rem" }}
         loading={isLoading}
       >
-        <Steps questions={questions} currentStep={currentStep} />
-        {/* <CurrentQuestion question={questions[currentStep]} /> */}
-        <StyledActionsWrapper>
-          <Button style={{ marginRight: "1rem" }}>Previous</Button>
-          <Button type="primary">Next</Button>
-        </StyledActionsWrapper>
+        {!isLoading && !!currentQuestion && (
+          <div>
+            <Steps questions={questions} currentStep={currentStep} />
+            <CurrentQuestion
+              question={currentQuestion}
+              value={results[currentQuestion.id] ?? null}
+              onChange={(value) => handleResultChange(currentQuestion.id, value)}
+            />
+            <StyledActionsWrapper>
+              <Button style={{ marginRight: "1rem" }}>Previous</Button>
+              <Button type="primary">Next</Button>
+            </StyledActionsWrapper>
+          </div>
+        )}
       </Card>
     </StyledPage>
   );

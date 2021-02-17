@@ -16,12 +16,6 @@ const StyledWrapper = styled.div`
   margin-top: 1.5rem;
 `;
 
-const radioStyle = {
-  display: "block",
-  height: "30px",
-  lineHeight: "30px",
-};
-
 const CurrentQuestion: React.FC<CurrentQuestionProps> = ({
   question,
   value,
@@ -41,7 +35,11 @@ const CurrentQuestion: React.FC<CurrentQuestionProps> = ({
         {question.answers.map((answer) => {
           return (
             <Radio
-              style={radioStyle}
+              style={{
+                display: "block",
+                marginBottom: "1rem",
+                whiteSpace: "initial",
+              }}
               value={answer.extrovertValue}
               key={answer.id}
             >
